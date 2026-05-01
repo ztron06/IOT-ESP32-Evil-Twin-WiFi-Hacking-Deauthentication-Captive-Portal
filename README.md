@@ -137,6 +137,45 @@ This project is intended for **educational and ethical testing purposes** only. 
 ### 📦 **Repository Tags**
 ```
 ESP32, Evil Twin, WiFi Hacking, Deauthentication, Captive Portal, HTML, CSS, JavaScript, Cybersecurity, Ethical Hacking, ESP32 WiFi, IoT, WiFi Pentesting
-```
+
+`NOTES FOR CSN150``
+# YOUR_NAME:Zainab Choudhury
+
+
+## Equipment Used
+- ESP32-CAM / ESP32 development board
+- USB cable or USB-to-serial adapter
+- Computer with Arduino IDE
+- Phone or laptop for testing the Wi-Fi connection
+- GitHub account for submitting the forked project
+
+## Tools Used
+- Arduino IDE
+- ESP32 board package by Espressif Systems
+- Serial Monitor
+- GitHub
+- Web browser
+- ChatGPT for documentation help
+
+## Steps I Followed
+1. I forked the assigned GitHub repository.
+2. I opened Arduino IDE and ensured it was connected to AI Thinker ESP32-CAM on COM6 (my ESP32-CAM connection).
+3. I created a new Arduino sketch.
+4. I pasted the ESP32 captive portal code into the sketch.
+5. I verified the code using Sketch → Verify/Compile.
+6. I uploaded the code using Sketch → Upload.
+7. I opened Serial Monitor and confirmed the ESP32 started correctly.
+8. I connected my laptop to the Wi-Fi network named CSN150-Lab-Demo.
+9. It directly opened http://192.168.4.1 in a browser.
+10. I confirmed that the captive portal page loaded successfully.
+11. I took screenshots showing the working project.
+
+## Problems / Solutions
+No problems occurred during the setup and testing process. Everything worked as expected.
+
+## Final Report
+For this assignment, I set up an ESP32 to create its own Wi-Fi network and host a simple captive portal page. After uploading the code, I was able to connect to the network from my laptop and access the webpage without any issues.
+
+T
 
 ---
