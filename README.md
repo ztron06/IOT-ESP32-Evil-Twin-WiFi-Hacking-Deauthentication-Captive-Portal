@@ -162,6 +162,140 @@ ESP32, Evil Twin, WiFi Hacking, Deauthentication, Captive Portal, HTML, CSS, Jav
 2. I opened Arduino IDE and ensured it was connected to AI Thinker ESP32-CAM on COM6 (my ESP32-CAM connection).
 3. I created a new Arduino sketch.
 4. I pasted the ESP32 captive portal code into the sketch.
+this is the code.
+#include <WiFi.h>
+#include <WebServer.h>
+#include <DNSServer.h>
+
+const byte DNS_PORT = 53;
+
+IPAddress apIP(192, 168, 4, 1);
+DNSServer dnsServer;
+WebServer server(80);
+
+const char* ssid = "CSN150-Lab-Demo";
+const char* password = "classdemo123";
+
+String portalPage() {
+  return R"rawliteral(
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CSN150 ESP32 Captive Portal Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 30px;
+    }
+    .card {
+      background: white;
+      max-width: 700px;
+      margin: auto;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+    h1 {
+      color: #222;
+    }
+    .safe {
+      color: green;
+      font-weight: bold;
+    }
+    .warning {
+      background: #fff3cd;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>CSN150 ESP32 Captive Portal Demo</h1>
+    <p class="safe">Authorized classroom lab demonstration.</p>
+
+    <p>This ESP32 is running its own Wi-Fi access point and captive portal.</p>
+
+    <p>This project demonstrates how captive portals can redirect users after they connect to a Wi-Fi network.</p>
+
+    <div class="warning">
+      <strong>Safety Note:</strong>
+      This demo does not impersonate a real router, collect credentials, intercept traffic, or attack users.
+    </div>
+
+    <h2>Project Status</h2>
+    <p>The ESP32 access point and captive portal are working correctly.</p>
+
+    <h2>Network Information</h2>
+    <p><strong>SSID:</strong> CSN150-Lab-Demo</p>
+    <p><strong>Portal Address:</strong> http://192.168.4.1</p>
+  </div>
+</body>
+</html>
+)rawliteral";
+}
+
+void handleRoot() {
+  server.send(200, "text/html", portalPage());
+}
+
+void handleCaptivePortal() {
+  server.send(200, "text/html", portalPage());
+}
+
+void handleNotFound() {
+  server.sendHeader("Location", "http://192.168.4.1", true);
+  server.send(302, "text/plain", "");
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  WiFi.mode(WIFI_AP);
+
+  WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+  WiFi.softAP(ssid, password);
+
+  dnsServer.start(DNS_PORT, "*", apIP);
+
+  server.on("/", handleRoot);
+
+  // Common captive portal detection URLs
+  server.on("/generate_204", handleCaptivePortal);        // Android
+  server.on("/gen_204", handleCaptivePortal);             // Android
+  server.on("/hotspot-detect.html", handleCaptivePortal); // Apple
+  server.on("/library/test/success.html", handleCaptivePortal); // Apple
+  server.on("/ncsi.txt", handleCaptivePortal);            // Windows
+  server.on("/connecttest.txt", handleCaptivePortal);     // Windows
+  server.on("/fwlink", handleCaptivePortal);              // Windows
+
+  server.onNotFound(handleNotFound);
+
+  server.begin();
+
+  Serial.println();
+  Serial.println("=================================");
+  Serial.println("CSN150 ESP32 Captive Portal Demo");
+  Serial.println("=================================");
+  Serial.print("Wi-Fi Name: ");
+  Serial.println(ssid);
+  Serial.print("Wi-Fi Password: ");
+  Serial.println(password);
+  Serial.print("Portal URL: http://");
+  Serial.println(apIP);
+  Serial.println("Connect a phone or laptop to the Wi-Fi network.");
+  Serial.println("Then open http://192.168.4.1");
+}
+
+void loop() {
+  dnsServer.processNextRequest();
+  server.handleClient();
+}
 5. I verified the code using Sketch → Verify/Compile.
 6. I uploaded the code using Sketch → Upload.
 7. I opened Serial Monitor and confirmed the ESP32 started correctly.
